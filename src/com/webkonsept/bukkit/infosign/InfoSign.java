@@ -19,14 +19,12 @@ public class InfoSign extends JavaPlugin implements Runnable {
 	private Boolean verbose = false;
 	
 
-	@Override
 	public void onDisable() {
 		getServer().getScheduler().cancelTasks(this);
 		signFile.release();
 		signFile = null;
 	}
 
-	@Override
 	public void onEnable() {
 		logger.info("InfoSign enabled");
 		try {
@@ -53,7 +51,6 @@ public class InfoSign extends JavaPlugin implements Runnable {
 		}
 	}
 
-	@Override
 	public void run() {
 		if (getServer().getOnlinePlayers().length > 0){
 			Iterator<Sign> keys = signFile.iterateSigns();

@@ -222,7 +222,6 @@ public class InfoSignFile implements Runnable {
 		}
 	}
 
-	@Override
 	public void run() {
 		updateSigns();
 		
