@@ -1,0 +1,20 @@
+<project default="buildJar">
+	<path id="class.path">
+		<fileset dir="./libs/" includes="*.jar" />
+  	</path>
+  	<target name="compile">
+    	<javac srcdir="./src" classpathref="class.path" />
+  	</target>
+  	<target name="jar" depends="compile">
+    	<jar destfile="InfoSign.jar"
+      		basedir="./bin"
+      		includes="**/*"
+    	/>
+  	</target>
+  	<target name="clean" depends="compile,jar">
+    	<delete 
+    		dir="bin/" 
+    	/>
+  	</target>
+  	<target name="buildJar" depends="compile,jar,clean" />
+</project>
