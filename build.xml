@@ -11,15 +11,25 @@
     	/>
   	</target>
   	<target name="jar" depends="compile">
+  		<copy
+  			file="./src/plugin.yml"
+  			tofile="./bin/plugin.yml"
+  		/>
     	<jar destfile="InfoSign.jar"
       		basedir="./bin"
       		includes="**/*"
     	/>
   	</target>
-  	<target name="clean" depends="compile,jar">
+  	<target name="clean" depends="">
     	<delete 
     		dir="bin/" 
     	/>
   	</target>
-  	<target name="buildJar" depends="compile,jar,clean" />
+	<target name="deploy" depends="jar,clean">
+		<copy 
+			file="InfoSign.jar"
+			tofile="W:/server/plugins/InfoSign.jar"
+		/>
+	</target>
+  	<target name="buildJar" depends="jar,clean" />
 </project>
