@@ -1,4 +1,4 @@
-<project default="buildJar">
+<project name="InfoSign" default="buildJar">
 	<path id="class.path">
 		<fileset dir="./libs/" includes="*.jar" />
   	</path>
@@ -15,7 +15,7 @@
   			file="./src/plugin.yml"
   			tofile="./bin/plugin.yml"
   		/>
-    	<jar destfile="InfoSign.jar"
+    	<jar destfile="${ant.project.name}.jar"
       		basedir="./bin"
       		includes="**/*"
     	/>
@@ -27,8 +27,8 @@
   	</target>
 	<target name="deploy" depends="jar,clean">
 		<copy 
-			file="InfoSign.jar"
-			tofile="W:/server/plugins/InfoSign.jar"
+			file="${ant.project.name}.jar"
+			tofile="W:/server/plugins/${ant.project.name}.jar"
 		/>
 	</target>
   	<target name="buildJar" depends="jar,clean" />
