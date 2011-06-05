@@ -23,7 +23,6 @@ public class InfoSignFile implements Runnable {
 	private File fileHandle;
 	private HashMap<Location,Sign> signs;
 	private InfoSign plugin;
-	private Long updated = System.currentTimeMillis();
 	
 	InfoSignFile (InfoSign instance, String filename) throws IOException,FileNotFoundException {
 		fileName = filename;
@@ -161,30 +160,20 @@ public class InfoSignFile implements Runnable {
 		return locationIterator;
 	}
 	public void updateSigns() {
-		Long now = System.currentTimeMillis();
-		if (now < updated + 20000){ // 20 seconds since last update?
-			plugin.babble("Less than 20 seconds since last update.  REFUSING.");
-			return;
-		}
-		updated = now;
 		plugin.babble("Sign update time!");
 		Iterator<Location> signsIterator = signs.keySet().iterator();
 		String longVersion = plugin.getServer().getVersion();
 		String shortVersion = longVersion.split("-")[5].split(" ")[0];
-		
-		double memUsed = ( Runtime.getRuntime().maxMemory() - Runtime.getRuntime().freeMemory() ) / 1048576;
-		double memMax = Runtime.getRuntime().maxMemory() / 1048576;
-		double percentageUsed = ( 100 / memMax) * memUsed;
 		
 		String maxPlayers = ((Integer)plugin.getServer().getMaxPlayers()).toString();
 		Integer playersOn = plugin.getServer().getOnlinePlayers().length;
 		
 		if (playersOn > 0){
 			String[] lines = new String[4];
-			lines[0] = plugin.getServer().getName();
-			lines[1] = shortVersion;
-			lines[2] = playersOn+"/"+maxPlayers+" slots used";
-			lines[3] = (int)percentageUsed+"% RAM used";
+			lines[0] = "[Info]";
+			lines[1] = plugin.getServer().getName();
+			lines[2] = shortVersion;
+			lines[3] = playersOn+"/"+maxPlayers+" slots used";
 	
 			while (signsIterator.hasNext()){
 				Location signAt = signsIterator.next();
@@ -196,13 +185,13 @@ public class InfoSignFile implements Runnable {
 					sign.setLine(2, lines[2]);
 					sign.setLine(3, lines[3]);
 					plugin.babble("Plop: "+sign.getLine(0)+"/"+sign.getLine(1)+"/"+sign.getLine(2)+"/"+sign.getLine(3));
-						sign.update(true);
+					sign.update(true);
 				}
 				else {
 					plugin.babble("Wat?!  Not a sign!  This block type is "+blockIs.toString()+"!");
 				}
 			}
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, plugin, 100);
+			//plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, plugin, 100);
 			plugin.babble("They should all be up to date now.");
 		}
 		else {

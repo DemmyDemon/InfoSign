@@ -56,7 +56,7 @@ public class InfoSign extends JavaPlugin implements Runnable {
 			Iterator<Sign> keys = signFile.iterateSigns();
 			while (keys.hasNext()){
 				Sign sign = keys.next();
-				sign.update();
+				sign.update(true);
 				babble("Scheduled sign update");
 			}
 		}
