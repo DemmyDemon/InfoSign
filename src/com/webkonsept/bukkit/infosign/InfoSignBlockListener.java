@@ -20,8 +20,13 @@ public class InfoSignBlockListener extends BlockListener {
 		if (signTag.equalsIgnoreCase("[Info]")){
 			plugin.babble("OMG it's one of mine!");
 			plugin.signFile.add(event.getBlock().getLocation(),(Sign)event.getBlock().getState());
-			plugin.signFile.updateSigns();
 			plugin.signFile.save();
+			String[] lines = plugin.signFile.prepareLines();
+			int index = 0;
+			for (String line : lines){
+				event.setLine(index, line);
+				index++;
+			}
 		}
 		else {
 			plugin.babble(signTag+"?  Ignored!");
@@ -37,6 +42,7 @@ public class InfoSignBlockListener extends BlockListener {
 				if (event.getPlayer().isOp()){
 					plugin.babble("It's an OP, so it's cool");
 					plugin.signFile.remove(location);
+					plugin.signFile.save();
 				}
 				else {
 					plugin.babble("DENIED!");

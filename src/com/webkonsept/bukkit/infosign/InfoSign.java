@@ -2,16 +2,14 @@ package com.webkonsept.bukkit.infosign;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.logging.Logger;
 
-import org.bukkit.block.Sign;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class InfoSign extends JavaPlugin implements Runnable {
+public class InfoSign extends JavaPlugin {
 	private final InfoSignBlockListener blockListener = new InfoSignBlockListener(this);
 	private final InfoSignPlayerListener playerListener = new InfoSignPlayerListener(this);
 	public Logger logger = Logger.getLogger("Minecraft");
@@ -20,7 +18,6 @@ public class InfoSign extends JavaPlugin implements Runnable {
 	
 
 	public void onDisable() {
-		getServer().getScheduler().cancelTasks(this);
 		signFile.release();
 		signFile = null;
 	}
@@ -28,7 +25,7 @@ public class InfoSign extends JavaPlugin implements Runnable {
 	public void onEnable() {
 		logger.info("InfoSign enabled");
 		try {
-			signFile = new InfoSignFile(this,"plugins/InfoSign/signs.txt");
+			signFile = new InfoSignFile(this,this.getDataFolder().toString()+"/signs.txt");
 		} catch (FileNotFoundException e) {
 			logger.severe("[InfoSign] Failed to read the sign file: "+e.getLocalizedMessage());
 			e.printStackTrace();
@@ -43,25 +40,11 @@ public class InfoSign extends JavaPlugin implements Runnable {
 		pm.registerEvent(Event.Type.PLAYER_JOIN,playerListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_QUIT,playerListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_KICK,playerListener, Priority.Normal, this);
-		getServer().getScheduler().scheduleAsyncRepeatingTask(this, signFile, 0, 6000);
+		pm.registerEvent(Event.Type.PLAYER_INTERACT,playerListener,Priority.Normal,this);
 	}
 	public void babble (String message){
 		if (verbose){
 			logger.info("[InfoSign] "+message);
-		}
-	}
-
-	public void run() {
-		if (getServer().getOnlinePlayers().length > 0){
-			Iterator<Sign> keys = signFile.iterateSigns();
-			while (keys.hasNext()){
-				Sign sign = keys.next();
-				sign.update(true);
-				babble("Scheduled sign update");
-			}
-		}
-		else {
-			babble("Skipping scheduled sign update:  No users connected");
 		}
 	}
 }

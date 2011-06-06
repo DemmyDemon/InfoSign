@@ -162,43 +162,49 @@ public class InfoSignFile implements Runnable {
 	public void updateSigns() {
 		plugin.babble("Sign update time!");
 		Iterator<Location> signsIterator = signs.keySet().iterator();
-		String longVersion = plugin.getServer().getVersion();
-		String shortVersion = longVersion.split("-")[5].split(" ")[0];
-		
-		String maxPlayers = ((Integer)plugin.getServer().getMaxPlayers()).toString();
-		Integer playersOn = plugin.getServer().getOnlinePlayers().length;
-		
-		if (playersOn > 0){
-			String[] lines = new String[4];
-			lines[0] = "[Info]";
-			lines[1] = plugin.getServer().getName();
-			lines[2] = shortVersion;
-			lines[3] = playersOn+"/"+maxPlayers+" slots used";
-	
+		if (plugin.getServer().getOnlinePlayers().length > 0){ // No need to update this if there are no players to see it.
 			while (signsIterator.hasNext()){
 				Location signAt = signsIterator.next();
-				Material blockIs = signAt.getBlock().getType();
-				if (blockIs.equals(Material.SIGN)|| blockIs.equals(Material.WALL_SIGN) || blockIs.equals(Material.SIGN_POST)){
-					Sign sign = (Sign)signAt.getBlock().getState();
-					sign.setLine(0, lines[0]);
-					sign.setLine(1, lines[1]);
-					sign.setLine(2, lines[2]);
-					sign.setLine(3, lines[3]);
-					plugin.babble("Plop: "+sign.getLine(0)+"/"+sign.getLine(1)+"/"+sign.getLine(2)+"/"+sign.getLine(3));
-					sign.update(true);
-				}
-				else {
-					plugin.babble("Wat?!  Not a sign!  This block type is "+blockIs.toString()+"!");
-				}
+				updateSingleSign(signAt);
 			}
-			//plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, plugin, 100);
 			plugin.babble("They should all be up to date now.");
 		}
 		else {
 			plugin.babble("No users on, so I'm skipping sign updates.  I mean:  Who would read them?!");
 		}
 	}
-
+	public String[] prepareLines (){
+		String[] lines = new String[4];
+		
+		String longVersion = plugin.getServer().getVersion();
+		String shortVersion = longVersion.split("-")[5].split(" ")[0];
+		
+		String maxPlayers = ((Integer)plugin.getServer().getMaxPlayers()).toString();
+		Integer playersOn = plugin.getServer().getOnlinePlayers().length;
+		
+		lines[0] = "[Info]";
+		lines[1] = plugin.getServer().getName();
+		lines[2] = shortVersion;
+		lines[3] = playersOn+"/"+maxPlayers+" slots used";
+		
+		return lines;
+	}
+	public void updateSingleSign(Location location){
+		Material blockIs = location.getBlock().getType();
+		if (blockIs.equals(Material.SIGN)|| blockIs.equals(Material.WALL_SIGN) || blockIs.equals(Material.SIGN_POST)){
+			Sign sign = (Sign)location.getBlock().getState();
+			String[] lines = prepareLines();
+			sign.setLine(0, lines[0]);
+			sign.setLine(1, lines[1]);
+			sign.setLine(2, lines[2]);
+			sign.setLine(3, lines[3]);
+			plugin.babble("Plop: "+sign.getLine(0)+"/"+sign.getLine(1)+"/"+sign.getLine(2)+"/"+sign.getLine(3));
+			sign.update(true);
+		}
+		else {
+			plugin.babble("Wat?!  Not a sign!  This block type is "+blockIs.toString()+"!");
+		}
+	}
 	public boolean contains(Location location) {
 		plugin.babble("Is this one of mine?");
 		if (signs.containsKey(location)){
@@ -213,7 +219,6 @@ public class InfoSignFile implements Runnable {
 
 	public void run() {
 		updateSigns();
-		
 	}
 
 	public void release() {
