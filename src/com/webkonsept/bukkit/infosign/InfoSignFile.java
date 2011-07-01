@@ -176,8 +176,12 @@ public class InfoSignFile implements Runnable {
 	public String[] prepareLines (){
 		String[] lines = new String[4];
 		
+		String shortVersion = "Unknown build";
 		String longVersion = plugin.getServer().getVersion();
-		String shortVersion = longVersion.split("-")[5].split(" ")[0];
+		String[] fragments = longVersion.split("-");
+		if (fragments.length >= 6){
+			shortVersion = fragments[5].split(" ")[0];
+		}
 		
 		String maxPlayers = ((Integer)plugin.getServer().getMaxPlayers()).toString();
 		Integer playersOn = plugin.getServer().getOnlinePlayers().length;
